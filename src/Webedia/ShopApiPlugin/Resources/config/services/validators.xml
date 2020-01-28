@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <imports>
+        <import resource="validators/**/*"/>
+    </imports>
+
+    <services>
+        <defaults public="true" />
+
+        <service id="sylius.shop_api_plugin.validator.channel_exists_validator"
+                 class="App\Webedia\ShopApiPlugin\Validator\ChannelExistsValidator">
+            <argument type="service" id="sylius.repository.channel" />
+            <tag name="validator.constraint_validator" alias="sylius_shop_api_channel_exists_validator" />
+        </service>
+
+    </services>
+</container>

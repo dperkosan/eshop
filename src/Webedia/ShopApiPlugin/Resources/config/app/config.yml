@@ -1,0 +1,38 @@
+jms_serializer:
+    metadata:
+        directories:
+            sylius-shop-api:
+                namespace_prefix: "App\\Webedia\\ShopApiPlugin\\View"
+                path: "@WebediaShopApiPlugin/Resources/config/serializer"
+            sylius-shop-api-product:
+                namespace_prefix: "App\\Webedia\\ShopApiPlugin\\View\\Product"
+                path: "@WebediaShopApiPlugin/Resources/config/serializer/Product"
+            sylius-shop-api-placed-order:
+                namespace_prefix: "App\\Webedia\\ShopApiPlugin\\View\\Order"
+                path : "@WebediaShopApiPlugin/Resources/config/serializer/Order"
+            sylius-addressing:
+                namespace_prefix: "App\\Webedia\\Component\\Addressing"
+                path: "@WebediaShopApiPlugin/Resources/config/serializer/Address"
+
+framework:
+    messenger:
+        default_bus: sylius_shop_api_plugin.command_bus
+        buses:
+            sylius_shop_api_plugin.command_bus:
+                middleware:
+                    - doctrine_transaction
+                    - messenger.middleware.dispatch_after_current_bus
+            sylius_shop_api_plugin.event_bus:
+                default_middleware: allow_no_handlers
+
+sylius_customer:
+    resources:
+        customer:
+            classes:
+                controller: App\Webedia\ShopApiPlugin\Controller\Customer\CustomerController
+
+liip_imagine:
+    filter_sets:
+        sylius_shop_api:
+            filters:
+                thumbnail: { size: [640, 480], mode: outbound }

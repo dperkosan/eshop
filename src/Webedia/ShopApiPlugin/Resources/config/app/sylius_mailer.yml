@@ -1,0 +1,14 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius_mailer:
+    emails:
+        api_verification_token:
+            subject: sylius.emails.user.verification_token.subject
+            template: "WebediaShopApiPlugin:Email:verification.html.twig"
+        api_reset_password_token:
+            subject: sylius.emails.user.reset_password_token.subject
+            template: "WebediaShopApiPlugin:Email:passwordReset.html.twig"
+        api_order_confirmation:
+            subject: sylius.emails.order_confirmation.subject
+            template: "WebediaShopApiPlugin:Email:orderConfirmation.html.twig"

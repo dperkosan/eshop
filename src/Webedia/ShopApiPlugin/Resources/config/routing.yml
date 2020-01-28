@@ -1,0 +1,43 @@
+sylius_shop_api_cart:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/cart.yml"
+    prefix: /shop-api
+
+sylius_shop_api_product_by_slug:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/productBySlug.yml"
+    prefix: /shop-api
+
+sylius_shop_api_product_by_code:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/productByCode.yml"
+    prefix: /shop-api
+
+sylius_shop_api_taxon:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/taxon.yml"
+    prefix: /shop-api
+
+sylius_shop_api_register:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/register.yml"
+    prefix: /shop-api
+
+sylius_shop_api_checkout:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/checkout.yml"
+    prefix: /shop-api/checkout
+
+sylius_shop_api_customer:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/customer.yml"
+    prefix: /shop-api
+
+sylius_shop_api_product_list:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/productList.yml"
+    prefix: /shop-api
+
+sylius_shop_api_address_book:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/address_book.yml"
+    prefix: /shop-api
+
+sylius_shop_api_order:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing/order.yml"
+    prefix: /shop-api
+
+sylius_shop_api_login:
+    methods: [POST]
+    path: /shop-api/login

@@ -1,7 +1,5 @@
 <p align="center">
-    <a href="https://sylius.com" target="_blank">
-        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
-    </a>
+    <img src="https://drive.google.com/file/d/18l3ekSkAsEyMtK_DiSnvM2eW6XAIxGY2/view?usp=sharing" />
 </p>
 
 <h1 align="center">Sylius Standard Edition</h1>

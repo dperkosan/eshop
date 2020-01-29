@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/dperkosan/files/master/eshop%20(2).jpg" />
+    <img src="https://raw.githubusercontent.com/dperkosan/files/master/syliusPart.jpg" />
 </p>
 
 <h1 align="center">Sylius Standard Edition</h1>

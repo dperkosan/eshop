@@ -9,7 +9,7 @@ For Headless E-shop part is used [**Sylius Standard Edition**](https://sylius.co
 System Requirements
 -----
 
-* [**Requirements for running Symfony**](http://symfony.com/doc/current/reference/requirements.html)
+* [Requirements for running Symfony](http://symfony.com/doc/current/reference/requirements.html)
 * The recommended operating systems for running Sylius are the Unix systems - Linux, MacOS
 * In the production environment recommendation is Apache web server ≥ 2.2, while developing the recommended way to work is to use PHP’s built-in web server
 * PHP version: ^7.2
@@ -21,19 +21,31 @@ Installation
 ------------
 
 ```bash
-$ wget http://getcomposer.org/composer.phar
-$ php composer.phar create-project sylius/sylius-standard project
-$ cd project
+$ git clone git@github.com:dperkosan/eshop.git
+$ cd eshop
+```
+
+Please, contact me for:
+* DB
+* media folder
+* jwt folder
+* .env.local file
+
+```bash
+$ composer install
 $ yarn install
 $ yarn build
-$ php bin/console sylius:install
-$ php bin/console server:start
+$ symfony serve
 $ open http://localhost:8000/
 ```
 
 Tasks
 ---------------
 
-- [x] Finish my changes
-- [ ] Push my commits to GitHub
-- [ ] Open a pull request
+- [x] Move "Shop Api Plugin" into project
+- [ ] Disable front shop
+- [ ] "Shop Api Plugin" customization for "Vue storefront API"
+- [ ] Creating platform for "Sylius" in "Vue storefront API"
+- [ ] Creating of "Data pump" in "Sylius" that will copy data from MySql into Elasticsearch
+- [ ] Synchronisation between MySql and Elasticsearch (on every create, insert, update and delete)
+- [ ] Custom functionalities regarding ongoing project

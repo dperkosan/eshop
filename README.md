@@ -36,7 +36,7 @@ $ composer install
 $ yarn install
 $ yarn build
 $ symfony serve
-$ open http://localhost:8000/
+$ open http://127.0.0.1:8000/admin/login
 ```
 
 Tasks

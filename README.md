@@ -9,13 +9,13 @@ For Headless E-shop part is used [**Sylius Standard Edition**](https://sylius.co
 System Requirements
 -----
 
-Sylius is the first decoupled eCommerce platform based on [**Symfony**](http://symfony.com) and [**Doctrine**](http://doctrine-project.org). 
-The highest quality of code, strong testing culture, built-in Agile (BDD) workflow and exceptional flexibility make it the best solution for application tailored to your business requirements. 
-Enjoy being an eCommerce Developer again!
-
-Powerful REST API allows for easy integrations and creating unique customer experience on any device.
-
-We're using full-stack Behavior-Driven-Development, with [phpspec](http://phpspec.net) and [Behat](http://behat.org)
+* [**Requirements for running Symfony**](http://symfony.com/doc/current/reference/requirements.html)
+* The recommended operating systems for running Sylius are the Unix systems - Linux, MacOS
+* In the production environment recommendation is Apache web server ≥ 2.2, while developing the recommended way to work is to use PHP’s built-in web server
+* PHP version: ^7.2
+* PHP extensions: `gd`, `exif`, `fileinfo`, `intl`
+* PHP configuration settings: `memory_limit ≥ 1024M`, `date.timezone` Use your local timezone
+* MySQL	5.7+, 8.0+
 
 Installation
 ------------

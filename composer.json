@@ -16,9 +16,12 @@
     ],
     "require": {
         "php": "^7.2",
+        "lexik/jwt-authentication-bundle": "^2.6",
+        "nelmio/cors-bundle": "^2.0",
         "sylius/sylius": "~1.6.0",
         "symfony/dotenv": "^4.3",
-        "symfony/flex": "^1.2"
+        "symfony/flex": "^1.2",
+        "symfony/messenger": "^4.4"
     },
     "require-dev": {
         "behat/behat": "^3.4",

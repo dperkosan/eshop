@@ -1,0 +1,2 @@
+sylius_shop_api:
+    resource: "@WebediaShopApiPlugin/Resources/config/routing.yml"

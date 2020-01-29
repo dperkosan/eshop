@@ -1,0 +1,13 @@
+<container xmlns="http://symfony.com/schema/dic/services">
+    <services>
+        <defaults public="true" />
+
+        <service id="sylius.shop_api_plugin.handler.set_default_address_handler"
+                 class="App\Webedia\ShopApiPlugin\Handler\AddressBook\SetDefaultAddressHandler">
+            <argument type="service" id="sylius.repository.customer" />
+            <argument type="service" id="sylius.repository.address" />
+            <argument type="service" id="sylius.repository.shop_user" />
+            <tag name="messenger.message_handler"  bus="sylius_shop_api_plugin.command_bus"/>
+        </service>
+    </services>
+</container>

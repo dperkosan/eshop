@@ -4,7 +4,7 @@
 
 <h1 align="center">Headless E-shop</h1>
 
-For Headless E-shop part is used [**Sylius Standard Edition**](https://sylius.com) + [**Shop API Plugin**](https://github.com/Sylius/ShopApiPlugin). Since I see the "Shop API Plugin" as a main part of the system that will be quite different from the original version (in order to accommodate both client and "Vue storefront API" requirements), I moved it from the vendor folder to a project and made it a separate plugin that can be directly modified. (`src/Webedia/ShopApiPlugin`)
+For Headless E-shop part is used [**Sylius Standard Edition**](https://sylius.com) + [**Shop API Plugin**](https://github.com/Sylius/ShopApiPlugin). Since I see the "Shop API Plugin" as a main part of the system that will be quite different from the original version (in order to accommodate both client and "Storefront API" requirements), I moved it from the vendor folder to a project and made it a separate plugin that can be directly modified. (`src/Webedia/ShopApiPlugin`)
 
 System Requirements
 -----
@@ -43,8 +43,8 @@ Tasks
 ---------------
 
 - [x] Move "Shop Api Plugin" into project
-- [ ] "Shop Api Plugin" customization for "Vue storefront API"
-- [ ] Creating platform for "Sylius" in "Vue storefront API"
+- [ ] "Shop Api Plugin" customization for "Storefront API"
+- [ ] Creating platform for "Sylius" in "Storefront API"
 - [ ] Creating of "Data pump" in "Sylius" that will copy data from MySql into Elasticsearch
 - [ ] Synchronisation between MySql and Elasticsearch (on every create, insert, update and delete)
 - [ ] Disable front shop

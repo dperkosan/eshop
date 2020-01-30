@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/dperkosan/files/master/syliusPart.jpg" />
+    <img src="https://raw.githubusercontent.com/dperkosan/files/master/eshop.jpg" />
 </p>
 
 <h1 align="center">Headless E-shop</h1>

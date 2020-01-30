@@ -43,9 +43,9 @@ Tasks
 ---------------
 
 - [x] Move "Shop Api Plugin" into project
-- [ ] Disable front shop
 - [ ] "Shop Api Plugin" customization for "Vue storefront API"
 - [ ] Creating platform for "Sylius" in "Vue storefront API"
 - [ ] Creating of "Data pump" in "Sylius" that will copy data from MySql into Elasticsearch
 - [ ] Synchronisation between MySql and Elasticsearch (on every create, insert, update and delete)
+- [ ] Disable front shop
 - [ ] Custom functionalities regarding ongoing project

@@ -104,12 +104,32 @@ class ReindexESCommand extends Command
         $output->writeln([
             '============',
             '',
-            'Insert data into ES',
+            'Insert categories into ES',
             '============',
             '',
         ]);
 
-        print_r($this->getTaxRule());
+        // only core fields for POC
+        // path need to be fixed
+        // children_data need to be added as core field
+        $categories = $this->getCategories();
+        foreach($categories as $category){
+            $qry = '
+            {
+                "id": '.$category['id'].',
+                "parent_id" : '.$category['parent_id'].',
+                "name" : "'.$category['name'].'",
+                "is_active" : true,
+                "position": '.$category['position'].',
+                "level" : '.$category['level'].',
+                "product_count" : '.$category['product_count'].',
+                "path" : "'.$category['parent_id'].'",
+                "url_key" : "'.$this->getUrlKey($category['slug']).'",
+                "url_path" : "'.$category['slug'].'"
+            }';
+            
+            $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$category['id'], $qry);
+        }
         
         return 0;
     }
@@ -133,13 +153,25 @@ class ReindexESCommand extends Command
         return $httpcode;
     }
 
-    private function getTaxRule(){
+    private function getCategories(){
         $conn = $this->em->getConnection();
-        $sql = 'SELECT id, code, name FROM sylius_tax_rate';
+        $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
+                FROM sylius_taxon c
+                LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
+                LEFT JOIN sylius_product p ON c.id = p.main_taxon_id
+                WHERE c.parent_id is not null AND t.locale = "en_US"
+                GROUP BY c.id';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $taxRule = $stmt->fetchAll();
+        $categories = $stmt->fetchAll();
 
-        return $taxRule;
+        return $categories;
+    }
+
+    private function getUrlKey($slug){
+        $pos = strrpos($slug, '/');
+        $key = $pos === false ? $slug : substr($slug, $pos + 1);
+
+        return $key;
     }
 }

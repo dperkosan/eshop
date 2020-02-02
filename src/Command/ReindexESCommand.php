@@ -122,11 +122,64 @@ class ReindexESCommand extends Command
                 "product_count" : '.$category['product_count'].',
                 "path" : "'.$this->getPath($categories, $category['id']).'",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
+                "slug" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'",
                 "children_data" : ['.$this->getChildren($categories, $category['id']).']
             }';
             
             $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$category['id'], $qry);
+        }
+
+        $output->writeln([
+            '============',
+            '',
+            'Insert products into ES',
+            '============',
+            '',
+        ]);
+
+        $products = $this->getProducts();
+        foreach($products as $product){
+            $type_id = $product['configurable'] > 0 ? "configurable" : "simple";
+            $categories = $this->getCategories($product['id']);
+            $categoriesArr = [];
+            foreach($categories as $category){
+                $categoriesArr[] = '
+                {
+                    "category_id": '.$category['id'].',
+                    "name": "'.$category['name'].'",
+                    "slug": "'.$this->getUrlKey($category['slug']).'",
+                    "path": "'.$category['slug'].'"
+                }';
+            }
+            $qry = '
+            {
+                "id": '.$product['id'].',
+                "name" : "'.$product['name'].'",
+                "image" : "'.$product['image'].'",
+                "sku" : "'.$product['sku'].'",
+                "url_key" : "'.$product['url_key'].'",
+                "url_path" : "products/'.$product['url_key'].'",
+                "type_id" : "'.$type_id.'",
+                "price" : '.$product['price'].',
+                "special_price" : 0,
+                "price_incl_tax": null,
+                "special_price_incl_tax": null,
+                "special_to_date": null,
+                "special_from_date": null,
+                "status": 1,
+                "visibility": 4,
+                "category_ids" : ['.$product['category_ids'].'],
+                "category" : ['.implode(",",$categoriesArr).'],
+                "stock": [
+                  {
+                    "is_in_stock": true,
+                    "qty": 0
+                  }
+                ]
+            }';
+            
+            $result = $this->qryES('POST', 'vue_storefront_catalog_product/_doc/'.$product['id'], $qry);
         }
         
         return 0;
@@ -151,19 +204,52 @@ class ReindexESCommand extends Command
         return $httpcode;
     }
 
-    private function getCategories(){
+    private function getCategories($product=false){
         $conn = $this->em->getConnection();
-        $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
+        if($product){
+            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
                 FROM sylius_taxon c
                 LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
-                LEFT JOIN sylius_product p ON c.id = p.main_taxon_id
+                LEFT JOIN sylius_product_taxon p ON c.id = p.taxon_id
+                WHERE c.parent_id is not null AND t.locale = "en_US" AND p.product_id='.$product.'
+                GROUP BY c.id';
+        }else{
+            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
+                FROM sylius_taxon c
+                LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
+                LEFT JOIN sylius_product_taxon p ON c.id = p.taxon_id
                 WHERE c.parent_id is not null AND t.locale = "en_US"
                 GROUP BY c.id';
+        }
+        
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $categories = $stmt->fetchAll();
 
         return $categories;
+    }
+
+    private function getProducts(){
+        $conn = $this->em->getConnection();
+        $sql = 'SELECT p.id, t.name, i.path AS image, p.code AS sku, t.slug as url_key, count(o.product_id) as configurable, price.price, pt.category_ids
+                FROM sylius_product p
+                LEFT JOIN sylius_product_image i ON p.id = i.owner_id 
+                LEFT JOIN sylius_product_translation t ON p.id = t.translatable_id
+                LEFT JOIN sylius_product_options o ON p.id = o.product_id
+                LEFT JOIN (SELECT product_id, min(price) as price
+                            FROM sylius_channel_pricing p
+                            LEFT JOIN sylius_product_variant v ON p.product_variant_id = v.id
+                            GROUP BY product_id) price ON p.id = price.product_id
+                LEFT JOIN (SELECT product_id, GROUP_CONCAT(CONCAT(\'"\', taxon_id, \'"\')) AS category_ids
+                            FROM sylius_product_taxon
+                            GROUP BY product_id) pt ON p.id = pt.product_id
+                WHERE p.enabled = 1 AND t.locale = "en_US"
+                GROUP BY p.id';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $products = $stmt->fetchAll();
+
+        return $products;
     }
 
     private function getUrlKey($slug){

@@ -109,9 +109,6 @@ class ReindexESCommand extends Command
             '',
         ]);
 
-        // only core fields for POC
-        // path need to be fixed
-        // children_data need to be added as core field
         $categories = $this->getCategories();
         foreach($categories as $category){
             $qry = '
@@ -123,9 +120,10 @@ class ReindexESCommand extends Command
                 "position": '.$category['position'].',
                 "level" : '.$category['level'].',
                 "product_count" : '.$category['product_count'].',
-                "path" : "'.$category['parent_id'].'",
+                "path" : "'.$this->getPath($categories, $category['id']).'",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
-                "url_path" : "'.$category['slug'].'"
+                "url_path" : "'.$category['slug'].'",
+                "children_data" : ['.$this->getChildren($categories, $category['id']).']
             }';
             
             $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$category['id'], $qry);
@@ -173,5 +171,28 @@ class ReindexESCommand extends Command
         $key = $pos === false ? $slug : substr($slug, $pos + 1);
 
         return $key;
+    }
+
+    private function getPath($categories, $categoryID){
+        $path =  $categoryID;
+        foreach($categories as $category){
+            if($category['id'] == $categoryID){
+                $path = $this->getPath($categories, $category['parent_id']).'/'.$path;
+            }
+        }
+        return $path;
+    }
+
+    private function getChildren($categories, $categoryID){
+        $children = [];
+        foreach($categories as $category){
+            if($category['parent_id'] == $categoryID){
+                $children[] = '{
+                    "id": '.$category['id'].',
+                    "children_data": ['.$this->getChildren($categories, $category['id']).']
+                  }';
+            }
+        }
+        return implode(",",$children);
     }
 }

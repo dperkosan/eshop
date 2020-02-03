@@ -123,6 +123,7 @@ class ReindexESCommand extends Command
                 "children_data" : ['.$this->getChildren($categories, $category['id']).'],
                 "children" : "'.$category['children'].'",
                 "path" : "'.$this->getPath($categories, $category['id']).'",
+                "available_sort_by":[],
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "slug" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'"

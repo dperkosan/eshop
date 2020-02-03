@@ -231,7 +231,7 @@ class ReindexESCommand extends Command
 
     private function getProducts(){
         $conn = $this->em->getConnection();
-        $sql = 'SELECT p.id, t.name, i.path AS image, p.code AS sku, t.slug as url_key, count(o.product_id) as configurable, price.price, pt.category_ids
+        $sql = 'SELECT p.id, t.name, i.path AS image, p.code AS sku, t.slug as url_key, count(o.product_id) as configurable, price.price/100 AS price, pt.category_ids
                 FROM sylius_product p
                 LEFT JOIN sylius_product_image i ON p.id = i.owner_id 
                 LEFT JOIN sylius_product_translation t ON p.id = t.translatable_id

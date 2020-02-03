@@ -125,6 +125,10 @@ class ReindexESCommand extends Command
                 "path" : "'.$this->getPath($categories, $category['id']).'",
                 "available_sort_by" : [],
                 "include_in_menu": true,
+                "description" : "'.$category['description'].'",
+                "meta_title" : "'.$category['name'].'",
+                "meta_description" : "'.$category['description'].'",
+                "display_mode": "PAGE",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "slug" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'"
@@ -217,7 +221,8 @@ class ReindexESCommand extends Command
                 WHERE c.parent_id is not null AND t.locale = "en_US" AND p.product_id='.$product.'
                 GROUP BY c.id';
         }else{
-            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count, ch.children
+            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, 
+                count(p.id) AS product_count, ch.children, t.description
                 FROM sylius_taxon c
                 LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
                 LEFT JOIN sylius_product_taxon p ON c.id = p.taxon_id

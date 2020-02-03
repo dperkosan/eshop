@@ -15,6 +15,7 @@ class ReindexESCommand extends Command
     private $esUrl = "localhost";
     private $esPort = "9200";
     private $em;
+    private $childrenCount;
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -110,10 +111,13 @@ class ReindexESCommand extends Command
         ]);
 
         $categories = $this->getCategories();
-        // is_anchor
-        // display_mode
+        // is_anchor ?
+        // display_mode ?
         // children_data
+        // custom_layout_update ?
         foreach($categories as $category){
+            $this->childrenCount = 0;
+            $children = $this->getChildren($categories, $category['id']);
             $qry = '
             {
                 "id": '.$category['id'].',
@@ -123,7 +127,7 @@ class ReindexESCommand extends Command
                 "position": '.$category['position'].',
                 "level" : '.$category['level'].',
                 "product_count" : '.$category['product_count'].',
-                "children_data" : ['.$this->getChildren($categories, $category['id']).'],
+                "children_data" : ['.$children.'],
                 "children" : "'.$category['children'].'",
                 "path" : "'.$this->getPath($categories, $category['id']).'",
                 "available_sort_by" : [],
@@ -134,9 +138,10 @@ class ReindexESCommand extends Command
                 "display_mode": "PRODUCTS",
                 "is_anchor": "0",
                 "custom_layout_update": "<referenceContainer name=\"catalog.leftnav\" remove=\"true\"/>",
+                "children_count": "'.$this->childrenCount.'",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
-                "slug" : "'.$this->getUrlKey($category['slug']).'",
-                "url_path" : "'.$category['slug'].'"
+                "url_path" : "'.$category['slug'].'",
+                "slug" : "'.$this->getUrlKey($category['slug']).'"
             }';
             
             $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$category['id'], $qry);
@@ -289,6 +294,7 @@ class ReindexESCommand extends Command
         $children = [];
         foreach($categories as $category){
             if($category['parent_id'] == $categoryID){
+                $this->childrenCount ++;
                 $children[] = '{
                     "id": '.$category['id'].',
                     "children_data": ['.$this->getChildren($categories, $category['id']).']

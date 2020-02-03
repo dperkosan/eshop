@@ -113,7 +113,6 @@ class ReindexESCommand extends Command
         $categories = $this->getCategories();
         // is_anchor ?
         // display_mode ?
-        // children_data
         // custom_layout_update ?
         foreach($categories as $category){
             $this->childrenCount = 0;
@@ -136,8 +135,8 @@ class ReindexESCommand extends Command
                 "meta_title" : "'.$category['name'].'",
                 "meta_description" : "'.$category['description'].'",
                 "display_mode": "PRODUCTS",
-                "is_anchor": "0",
-                "custom_layout_update": "<referenceContainer name=\"catalog.leftnav\" remove=\"true\"/>",
+                "is_anchor": "1",
+                "custom_layout_update": "",
                 "children_count": "'.$this->childrenCount.'",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'",
@@ -312,7 +311,7 @@ class ReindexESCommand extends Command
                     "meta_title" : "'.$category['name'].'",
                     "meta_description" : "'.$category['description'].'",
                     "display_mode": "PRODUCTS",
-                    "is_anchor": "0",
+                    "is_anchor": "1",
                     "custom_layout_update": "<referenceContainer name=\"catalog.leftnav\" remove=\"true\"/>",
                     "children_count": "'.$this->childrenCount.'",
                     "url_key" : "'.$this->getUrlKey($category['slug']).'",

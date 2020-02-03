@@ -110,6 +110,9 @@ class ReindexESCommand extends Command
         ]);
 
         $categories = $this->getCategories();
+        // is_anchor
+        // display_mode
+        // children_data
         foreach($categories as $category){
             $qry = '
             {
@@ -130,6 +133,7 @@ class ReindexESCommand extends Command
                 "meta_description" : "'.$category['description'].'",
                 "display_mode": "PRODUCTS",
                 "is_anchor": "0",
+                "custom_layout_update": "<referenceContainer name=\"catalog.leftnav\" remove=\"true\"/>",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "slug" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'"

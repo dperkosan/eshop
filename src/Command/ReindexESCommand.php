@@ -297,7 +297,27 @@ class ReindexESCommand extends Command
                 $this->childrenCount ++;
                 $children[] = '{
                     "id": '.$category['id'].',
-                    "children_data": ['.$this->getChildren($categories, $category['id']).']
+                    "parent_id" : '.$category['parent_id'].',
+                    "name" : "'.$category['name'].'",
+                    "is_active" : true,
+                    "position": '.$category['position'].',
+                    "level" : '.$category['level'].',
+                    "product_count" : '.$category['product_count'].',
+                    "children_data": ['.$this->getChildren($categories, $category['id']).'],
+                    "children" : "'.$category['children'].'",
+                    "path" : "'.$this->getPath($categories, $category['id']).'",
+                    "available_sort_by" : [],
+                    "include_in_menu": true,
+                    "description" : "'.$category['description'].'",
+                    "meta_title" : "'.$category['name'].'",
+                    "meta_description" : "'.$category['description'].'",
+                    "display_mode": "PRODUCTS",
+                    "is_anchor": "0",
+                    "custom_layout_update": "<referenceContainer name=\"catalog.leftnav\" remove=\"true\"/>",
+                    "children_count": "'.$this->childrenCount.'",
+                    "url_key" : "'.$this->getUrlKey($category['slug']).'",
+                    "url_path" : "'.$category['slug'].'",
+                    "slug" : "'.$this->getUrlKey($category['slug']).'"
                   }';
             }
         }

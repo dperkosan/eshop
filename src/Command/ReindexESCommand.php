@@ -174,7 +174,7 @@ class ReindexESCommand extends Command
                 "stock": [
                   {
                     "is_in_stock": true,
-                    "qty": 0
+                    "qty": 10
                   }
                 ]
             }';

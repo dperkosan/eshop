@@ -120,11 +120,12 @@ class ReindexESCommand extends Command
                 "position": '.$category['position'].',
                 "level" : '.$category['level'].',
                 "product_count" : '.$category['product_count'].',
+                "children_data" : ['.$this->getChildren($categories, $category['id']).'],
+                "children" : "'.$category['children'].'",
                 "path" : "'.$this->getPath($categories, $category['id']).'",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "slug" : "'.$this->getUrlKey($category['slug']).'",
-                "url_path" : "'.$category['slug'].'",
-                "children_data" : ['.$this->getChildren($categories, $category['id']).']
+                "url_path" : "'.$category['slug'].'"
             }';
             
             $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$category['id'], $qry);
@@ -214,10 +215,13 @@ class ReindexESCommand extends Command
                 WHERE c.parent_id is not null AND t.locale = "en_US" AND p.product_id='.$product.'
                 GROUP BY c.id';
         }else{
-            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
+            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count, ch.children
                 FROM sylius_taxon c
                 LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
                 LEFT JOIN sylius_product_taxon p ON c.id = p.taxon_id
+                LEFT JOIN (SELECT GROUP_CONCAT(id) AS children, parent_id 
+                            FROM sylius_taxon 
+                            GROUP BY parent_id) ch ON c.id = ch.parent_id
                 WHERE c.parent_id is not null AND t.locale = "en_US"
                 GROUP BY c.id';
         }

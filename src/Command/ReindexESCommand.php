@@ -128,7 +128,8 @@ class ReindexESCommand extends Command
                 "description" : "'.$category['description'].'",
                 "meta_title" : "'.$category['name'].'",
                 "meta_description" : "'.$category['description'].'",
-                "display_mode": "PAGE",
+                "display_mode": "PRODUCTS",
+                "is_anchor": "0",
                 "url_key" : "'.$this->getUrlKey($category['slug']).'",
                 "slug" : "'.$this->getUrlKey($category['slug']).'",
                 "url_path" : "'.$category['slug'].'"

@@ -438,28 +438,46 @@ class ReindexESCommand extends Command
         $children = [];
         $conn = $this->em->getConnection();
 
-        $sql = 'SELECT * 
+        $sql = 'SELECT IFNULL(im.path, imp.path) AS image, t.slug AS url_key, v.code AS sku, v.id, pr.price/100 AS price, 
+                CONCAT(t.name, " - ", vt.name) AS name, pt.category_ids, p.enabled AS status
                 FROM sylius_product_variant v
                     LEFT JOIN sylius_product_image_product_variants iv ON iv.variant_id = v.id
                     LEFT JOIN sylius_product_image im ON im.id = iv.image_id
                     LEFT JOIN sylius_product p ON p.id = v.product_id
                     LEFT JOIN sylius_product_image imp ON imp.owner_id = p.id and imp.type = "main"
-                WHERE v.product_id = '.$productId;
+                    LEFT JOIN sylius_product_translation t ON t.translatable_id = v.product_id AND t.locale = "en_US"
+                    LEFT JOIN sylius_product_variant_translation vt ON vt.translatable_id = v.id AND vt.locale = "en_US"
+                    LEFT JOIN sylius_channel_pricing pr ON pr.product_variant_id = v.id
+                    LEFT JOIN (SELECT product_id, GROUP_CONCAT(CONCAT(\'"\', taxon_id, \'"\')) AS category_ids
+                                FROM sylius_product_taxon
+                                GROUP BY product_id) pt ON pt.product_id = v.product_id
+                    WHERE v.product_id = '.$productId;
         
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
 
         foreach($results as $key => $result){
-            $media[] = '{
-                "vid": null,
-                "image": "/'.$result['path'].'",
-                "pos": '.$key.',
-                "typ": "image",
-                "lab": ""
+            $status = $product['enabled'] == 1 ? 1 : 2;
+            $children[] = '{
+                "image": "/'.$result['image'].'",
+                "thumbnail": "/'.$result['image'].'",
+                "small_image": "/'.$result['image'].'",
+                "tax_class_id": null,
+                "has_options": "0",
+                "tier_prices": [],
+                "url_key": "'.$result['url_key'].'",
+                "required_options": "0",
+                "msrp_display_actual_price_type": "0",
+                "price": '.$result['price'].',
+                "name": "'.$result['name'].'",
+                "id": '.$result['id'].',
+                "category_ids": ['.$result['category_ids'].'],
+                "sku": "'.$result['sku'].'",
+                "status": '.$status.'
               }';
         }
 
-        return implode(",", $media);
+        return implode(",", $children);
     }
 }

@@ -271,8 +271,7 @@ class ReindexESCommand extends Command
                 "special_price_incl_tax": null,
                 "special_to_date": null,
                 "special_from_date": null,
-                "category" : ['.implode(",",$categoriesArr).'],
-                
+                "category" : ['.implode(",",$categoriesArr).']
             }';
             
             $result = $this->qryES('POST', 'vue_storefront_catalog_product/_doc/'.$product['id'], $qry);

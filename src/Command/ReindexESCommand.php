@@ -206,7 +206,7 @@ class ReindexESCommand extends Command
                 "special_price": null,
                 "minimal_price": '.$product['price'].',
                 "regular_price": '.$product['price'].',
-                "description": "'.strip_tags($product['description']).'",
+                "description": "'.trim(preg_replace('/\s+/', ' ', strip_tags($product['description']))).'",
                 "image" : "/'.$product['image'].'",
                 "small_image": "/'.$product['image'].'",
                 "thumbnail": "/'.$product['image'].'",

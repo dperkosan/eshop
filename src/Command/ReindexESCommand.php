@@ -252,7 +252,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-
+print_r($result);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

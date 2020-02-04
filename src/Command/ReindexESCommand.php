@@ -307,10 +307,13 @@ class ReindexESCommand extends Command
     private function getCategories($product=false){
         $conn = $this->em->getConnection();
         if($product){
-            $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, count(p.id) AS product_count
+            $sql = 'SELECT c.id, t.name, t.slug
                 FROM sylius_taxon c
                 LEFT JOIN sylius_taxon_translation t ON c.id = t.translatable_id 
                 LEFT JOIN sylius_product_taxon p ON c.id = p.taxon_id
+                LEFT JOIN (SELECT GROUP_CONCAT(id) AS children, parent_id 
+                            FROM sylius_taxon 
+                            GROUP BY parent_id) ch ON c.id = ch.parent_id
                 WHERE c.parent_id is not null AND t.locale = "en_US" AND p.product_id='.$product.'
                 GROUP BY c.id';
         }else{

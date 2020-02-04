@@ -206,7 +206,7 @@ class ReindexESCommand extends Command
                 "special_price": null,
                 "minimal_price": '.$product['price'].',
                 "regular_price": '.$product['price'].',
-                "description": '.$product['description'].',
+                "description": "'.$product['description'].'",
                 "image" : "/'.$product['image'].'",
                 "small_image": "/'.$product['image'].'",
                 "thumbnail": "/'.$product['image'].'",
@@ -252,7 +252,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-print_r($result);
+        
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

@@ -205,9 +205,6 @@ class ReindexESCommand extends Command
                 "image" : "/'.$product['image'].'",
                 "url_key" : "'.$product['url_key'].'",
                 "url_path" : "products/'.$product['url_key'].'",
-                
-                
-                "special_price" : 0,
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
                 "special_to_date": null,
@@ -242,7 +239,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-       print_r($result);
+        
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

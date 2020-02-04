@@ -163,10 +163,15 @@ class ReindexESCommand extends Command
         $products = $this->getProducts();
         // attribute_set_id ?
         // product_links ?
-        // custom_attributes
+        // custom_attributes ?
+        // small_image ?
+        // thumbnail ?
         // different types of pricing ?
+        // required_options ?
+        // msrp_display_actual_price_type ?
         foreach($products as $product){
             $type_id = $product['configurable'] > 0 ? "configurable" : "simple";
+            $has_options = $product['configurable'] > 0 ? "1" : "0";
             $enabled = $product['enabled'] == 1 ? 1 : 2;
             $visibility = $product['enabled'] == 1 ? 4 : 1;
             $categories = $this->getCategories($product['id']);
@@ -201,9 +206,17 @@ class ReindexESCommand extends Command
                 "special_price": null,
                 "minimal_price": '.$product['price'].',
                 "regular_price": '.$product['price'].',
-
+                "description": '.$product['description'].',
                 "image" : "/'.$product['image'].'",
+                "small_image": "/'.$product['image'].'",
+                "thumbnail": "/'.$product['image'].'",
+                "category_ids" : ['.$product['category_ids'].'],
+                "options_container" : "",
+                "required_options": "0",
+                "has_options": "'.$has_options.'",
                 "url_key" : "'.$product['url_key'].'",
+                "msrp_display_actual_price_type": "0",
+
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
@@ -211,7 +224,7 @@ class ReindexESCommand extends Command
                 "special_from_date": null,
                 
                 
-                "category_ids" : ['.$product['category_ids'].'],
+                
                 "category" : ['.implode(",",$categoriesArr).'],
                 "stock": [
                   {
@@ -239,7 +252,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-        
+
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
@@ -279,7 +292,7 @@ class ReindexESCommand extends Command
         $conn = $this->em->getConnection();
         $sql = 'SELECT p.id, t.name, i.path AS image, p.code AS sku, t.slug as url_key, 
                 count(o.product_id) as configurable, price.price/100 AS price, pt.category_ids, p.enabled,
-                p.created_at, p.updated_at
+                p.created_at, p.updated_at, t.description
                 FROM sylius_product p
                 LEFT JOIN sylius_product_image i ON p.id = i.owner_id 
                 LEFT JOIN sylius_product_translation t ON p.id = t.translatable_id

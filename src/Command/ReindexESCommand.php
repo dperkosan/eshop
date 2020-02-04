@@ -458,7 +458,7 @@ class ReindexESCommand extends Command
         $results = $stmt->fetchAll();
 
         foreach($results as $key => $result){
-            $status = $product['enabled'] == 1 ? 1 : 2;
+            $status = $result['status'] == 1 ? 1 : 2;
             $children[] = '{
                 "image": "/'.$result['image'].'",
                 "thumbnail": "/'.$result['image'].'",

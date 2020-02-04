@@ -186,6 +186,7 @@ class ReindexESCommand extends Command
             $visibility = $product['enabled'] == 1 ? 4 : 1;
             $categories = $this->getCategories($product['id']);
             $media = $this->getMedia($product['id']);
+            $configurableChildren = $this->getConfigurableChildren($product['id']);
             $categoriesArr = [];
             foreach($categories as $category){
                 $categoriesArr[] = '
@@ -269,6 +270,7 @@ class ReindexESCommand extends Command
                   }
                 ],
                 "media_gallery" : ['.$media.'],
+                "configurable_children" : ['.$configurableChildren.'],
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
@@ -430,5 +432,34 @@ class ReindexESCommand extends Command
             }
         }
         return implode(",",$children);
+    }
+
+    private function getConfigurableChildren($productId){
+        $children = [];
+        $conn = $this->em->getConnection();
+
+        $sql = 'SELECT * 
+                FROM sylius_product_variant v
+                    LEFT JOIN sylius_product_image_product_variants iv ON iv.variant_id = v.id
+                    LEFT JOIN sylius_product_image im ON im.id = iv.image_id
+                    LEFT JOIN sylius_product p ON p.id = v.product_id
+                    LEFT JOIN sylius_product_image imp ON imp.owner_id = p.id and imp.type = "main"
+                WHERE v.product_id = '.$productId;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        foreach($results as $key => $result){
+            $media[] = '{
+                "vid": null,
+                "image": "/'.$result['path'].'",
+                "pos": '.$key.',
+                "typ": "image",
+                "lab": ""
+              }';
+        }
+
+        return implode(",", $media);
     }
 }

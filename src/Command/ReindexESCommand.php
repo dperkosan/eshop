@@ -169,6 +169,7 @@ class ReindexESCommand extends Command
         // different types of pricing ?
         // required_options ?
         // msrp_display_actual_price_type ?
+        // tax_class_id ?
         foreach($products as $product){
             $type_id = $product['configurable'] > 0 ? "configurable" : "simple";
             $has_options = $product['configurable'] > 0 ? "1" : "0";
@@ -216,15 +217,22 @@ class ReindexESCommand extends Command
                 "has_options": "'.$has_options.'",
                 "url_key" : "'.$product['url_key'].'",
                 "msrp_display_actual_price_type": "0",
+                "tax_class_id": null,
+                "material": [],
+                "eco_collection": "0",
+                "performance_fabric": "0",
+                "erin_recommends": "0",
+                "new": "0",
+                "sale": "0",
+                "style_general": null,
+                "pattern": null,
+                "climate": [],
 
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
                 "special_to_date": null,
                 "special_from_date": null,
-                
-                
-                
                 "category" : ['.implode(",",$categoriesArr).'],
                 "stock": [
                   {
@@ -252,7 +260,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-print_r($result);
+        
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

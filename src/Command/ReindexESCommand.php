@@ -178,12 +178,14 @@ class ReindexESCommand extends Command
         // style_general
         // pattern
         // climate
+        // fields in stock
         foreach($products as $product){
             $type_id = $product['configurable'] > 0 ? "configurable" : "simple";
             $has_options = $product['configurable'] > 0 ? "1" : "0";
             $enabled = $product['enabled'] == 1 ? 1 : 2;
             $visibility = $product['enabled'] == 1 ? 4 : 1;
             $categories = $this->getCategories($product['id']);
+            $media = $this->getMedia($product['id']);
             $categoriesArr = [];
             foreach($categories as $category){
                 $categoriesArr[] = '
@@ -266,6 +268,7 @@ class ReindexESCommand extends Command
                     "stock_status_changed_auto": 0
                   }
                 ],
+                "media_gallery" : ['.$media.'],
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
@@ -351,6 +354,31 @@ class ReindexESCommand extends Command
         $products = $stmt->fetchAll();
 
         return $products;
+    }
+
+    private function getMedia($productId){
+        $media = [];
+        $conn = $this->em->getConnection();
+
+        $sql = 'SELECT path 
+                FROM sylius_product_image 
+                WHERE owner_id = '.$productId;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        foreach($results as $key => $result){
+            $media[] = '{
+                "vid": null,
+                "image": "/'.$result['path'].'",
+                "pos": '.$key.',
+                "typ": "image",
+                "lab": ""
+              }';
+        }
+
+        return implode(",", $media);
     }
 
     private function getUrlKey($slug){

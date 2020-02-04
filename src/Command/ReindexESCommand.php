@@ -265,7 +265,7 @@ class ReindexESCommand extends Command
                     "is_decimal_divided": false,
                     "stock_status_changed_auto": 0
                   }
-                ]
+                ],
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
@@ -293,7 +293,7 @@ class ReindexESCommand extends Command
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
         $result = curl_exec($ch);
-        print_r($result);
+        
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 

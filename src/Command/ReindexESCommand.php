@@ -221,12 +221,12 @@ class ReindexESCommand extends Command
                 "material": [],
                 "eco_collection": "0",
                 "performance_fabric": "0",
-                "erin_recommends": "0",
                 "new": "0",
                 "sale": "0",
                 "style_general": null,
                 "pattern": null,
                 "climate": [],
+                "slug" : "'.$product['url_key'].'",
 
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,

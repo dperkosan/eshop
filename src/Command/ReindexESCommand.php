@@ -270,7 +270,7 @@ class ReindexESCommand extends Command
                   }
                 ],
                 "media_gallery" : ['.$media.'],
-                "configurable_children" : ['.$configurableChildren.'],
+                "configurable_children" : [],
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,

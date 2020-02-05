@@ -202,7 +202,7 @@ class ReindexESCommand extends Command
                 "id": '.$attribute['id'].'
             }';
             
-            $result = $this->qryES('POST', 'vue_storefront_catalog_category/_doc/'.$attribute['id'], $qry);
+            $result = $this->qryES('POST', 'vue_storefront_catalog_attribute/_doc/'.$attribute['id'], $qry);
         }
 
         $output->writeln([

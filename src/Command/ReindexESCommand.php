@@ -331,7 +331,7 @@ class ReindexESCommand extends Command
                 "special_from_date": null,
                 "category" : ['.implode(",",$categoriesArr).']
             }';
-            
+
             $result = $this->qryES('POST', 'vue_storefront_catalog_product/_doc/'.$product['id'], $qry);
         }
         
@@ -567,11 +567,34 @@ class ReindexESCommand extends Command
                 "name": "'.$result['name'].'",
                 "id": '.$result['id'].',
                 "category_ids": ['.$result['category_ids'].'],
-                "sku": "'.$result['sku'].'",
+                "sku": "'.$result['sku'].'",'
+                .$this->getOptionValues($result['id']).'
                 "status": '.$status.'
               }';
         }
 
         return implode(",", $children);
+    }
+
+    private function getOptionValues($childId){
+        $options = '';
+        $conn = $this->em->getConnection();
+
+        $sql = 'SELECT v.id, po.code, ov.option_value_id 
+                FROM sylius_product_variant v
+                    INNER JOIN sylius_product_variant_option_value ov ON ov.variant_id = v.id
+                    INNER JOIN sylius_product_option_value pov ON pov.id = ov.option_value_id
+                    INNER JOIN sylius_product_option po ON po.id = pov.option_id
+                WHERE v.id = '.$childId;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        foreach($results as $key => $result){
+            $options .= '"'.$result['code'].'": "'.$result['option_value_id'].'", ';
+        }
+
+        return $options;
     }
 }

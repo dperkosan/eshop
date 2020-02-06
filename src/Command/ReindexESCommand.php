@@ -43,7 +43,7 @@ class ReindexESCommand extends Command
        // $this->qryES('POST', 'vue_storefront_catalog_taxrule/_doc/1','{}');
 
         // create taxrule index
-        $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');
+  /*      $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');
         if($result == 200){
             $output->writeln("index 'vue_storefront_catalog_taxrule'   already exists");
         }else{
@@ -56,7 +56,7 @@ class ReindexESCommand extends Command
                 $output->writeln("index 'vue_storefront_catalog_taxrule'   NOT created");
             }
         }
-/*
+
         // create category index
         $result = $this->qryES('GET', 'vue_storefront_catalog_category?pretty=true');
         if($result == 200){
@@ -256,7 +256,6 @@ class ReindexESCommand extends Command
                 "status": '.$enabled.',
                 "visibility": '.$visibility.',
                 "type_id" : "'.$type_id.'",
-                "dress_size" : 6,
                 "created_at": "'.$product['created_at'].'",
                 "updated_at": "'.$product['updated_at'].'",
                 "product_links": [],

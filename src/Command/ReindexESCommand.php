@@ -40,11 +40,7 @@ class ReindexESCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln([
-            'Create indexes',
-            '============',
-            '',
-        ]);
+        $this->qryES('POST', 'vue_storefront_catalog_taxrule/_doc/1');
 /*
         // create taxrule index
         $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');

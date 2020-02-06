@@ -1,6 +1,5 @@
 <?php
 
-// import attribute table
 // import for different stores
 // import for more product types then just configurable and simple
 
@@ -238,6 +237,7 @@ class ReindexESCommand extends Command
             $enabled = $product['enabled'] == 1 ? 1 : 2;
             $visibility = $product['enabled'] == 1 ? 4 : 1;
             $categories = $this->getCategories($product['id']);
+            $configurableOptions = $this->getConfigurableOptions($product['id']);
             $media = $this->getMedia($product['id']);
             $configurableChildren = $this->getConfigurableChildren($product['id']);
             $categoriesArr = [];
@@ -322,8 +322,9 @@ class ReindexESCommand extends Command
                     "stock_status_changed_auto": 0
                   }
                 ],
-                "media_gallery" : ['.$media.'],
-                "configurable_children" : ['.$configurableChildren.'],
+                "media_gallery" : ['.$media.'],'
+                .$configurableChildren
+                .$configurableOptions.'
                 "url_path" : "products/'.$product['url_key'].'",
                 "price_incl_tax": null,
                 "special_price_incl_tax": null,
@@ -573,7 +574,68 @@ class ReindexESCommand extends Command
               }';
         }
 
-        return implode(",", $children);
+        if(count($children) > 0){
+            return '"configurable_children": ['.implode(",", $children).'],';
+        }else{
+            return '';
+        }
+    }
+
+    private function getConfigurableOptions($productId){
+        $options = [];
+        $values = [];
+        $configurableOptions = [];
+        $conn = $this->em->getConnection();
+
+        $sql = 'SELECT po.id AS attributeId, pot.name AS attributeLabel, po.position, po.code AS attributeCode, pv.product_id, pv.id, povt.value AS valueLabel, pov.id AS valueIndex
+                FROM sylius_product_variant pv
+                    INNER JOIN sylius_product_variant_option_value pvov ON pvov.variant_id = pv.id
+                    INNER JOIN sylius_product_option_value pov ON pov.id = pvov.option_value_id
+                    INNER JOIN sylius_product_option_value_translation povt ON povt.translatable_id = pov.id AND povt.locale = "en_US"
+                    INNER JOIN sylius_product_option po ON po.id = pov.option_id
+                    INNER JOIN sylius_product_option_translation pot ON pot.translatable_id = po.id AND pot.locale = "en_US"
+                WHERE pv.product_id = '.$productId;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        foreach($results as $key => $result){
+            $configurableOptions[$result['attributeId']]['product_id'] = $result['product_id'];
+            $configurableOptions[$result['attributeId']]['id'] = $result['id'];
+            $configurableOptions[$result['attributeId']]['label'] = $result['attributeLabel'];
+            $configurableOptions[$result['attributeId']]['position'] = $result['position'];
+            $configurableOptions[$result['attributeId']]['attribute_code'] = $result['attributeCode'];
+            $configurableOptions[$result['attributeId']]['values'][$result['valueIndex']] = [
+                'label' => $result['valueLabel']
+            ];
+        }
+
+        foreach($configurableOptions as $attributeId => $configurableOption){
+            $values = [];
+            foreach($configurableOptions[$attributeId]['values'] as $valueIndex => $value){
+                $values[] = '{
+                    "value_index": '.$valueIndex.',
+                    "label": "'.$value['label'].'"
+                }';
+            }
+            $options[] = '{
+                "attribute_id": "'.$attributeId.'",
+                "values": ['.implode(",",$values).'],
+                "product_id": '.$configurableOption['product_id'].',
+                "id": '.$configurableOption['id'].',
+                "label": "'.$configurableOption['label'].'",
+                "position": '.$configurableOption['position'].',
+                "attribute_code": "'.$configurableOption['attribute_code'].'"
+            }';
+        }
+
+        if(count($options) > 0){
+            return '"configurable_options": ['.implode(",", $options).'],';
+        }else{
+            return '';
+        }
+        
     }
 
     private function getOptionValues($childId){

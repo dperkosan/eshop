@@ -2,6 +2,7 @@
 
 // import for different stores
 // import for more product types then just configurable and simple
+// REFACTORATE!!!!
 
 namespace App\Command;
 

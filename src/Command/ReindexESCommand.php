@@ -40,10 +40,14 @@ class ReindexESCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-       // $this->qryES('POST', 'vue_storefront_catalog_taxrule/_doc/1','{}');
+        $output->writeln([
+            'Create indexes',
+            '============',
+            '',
+        ]);
 
         // create taxrule index
-  /*      $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');
+        $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');
         if($result == 200){
             $output->writeln("index 'vue_storefront_catalog_taxrule'   already exists");
         }else{
@@ -101,7 +105,7 @@ class ReindexESCommand extends Command
                 $output->writeln("index 'vue_storefront_catalog_product'   NOT created");
             }
         }
-*/
+
         $output->writeln([
             '============',
             '',

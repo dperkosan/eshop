@@ -1,0 +1,90 @@
+{
+    "mappings": {
+      "properties": {
+        "creation_time": {
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis",
+          "type": "date"
+        },
+        "identifier": {
+          "type": "keyword"
+        },
+        "code": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "ignore_above": 256,
+              "type": "keyword"
+            }
+          }
+        },
+        "customer_tax_class_ids": {
+          "type": "long"
+        },
+        "tax_rate_ids": {
+          "type": "long"
+        },
+        "rates": {
+          "properties": {
+            "code": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "ignore_above": 256,
+                  "type": "keyword"
+                }
+              }
+            },
+            "tax_region_id": {
+              "type": "long"
+            },
+            "rate": {
+              "type": "long"
+            },
+            "id": {
+              "type": "long"
+            },
+            "tax_country_id": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "ignore_above": 256,
+                  "type": "keyword"
+                }
+              }
+            },
+            "tax_postcode": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "ignore_above": 256,
+                  "type": "keyword"
+                }
+              }
+            }
+          }
+        },
+        "priority": {
+          "type": "long"
+        },
+        "calculate_subtotal": {
+          "type": "boolean"
+        },
+        "tsk": {
+          "type": "long"
+        },
+        "update_time": {
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis",
+          "type": "date"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "position": {
+          "type": "long"
+        },
+        "product_tax_class_ids": {
+          "type": "long"
+        }
+      }
+    }
+  }

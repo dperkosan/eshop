@@ -45,7 +45,7 @@ class ReindexESCommand extends Command
             '============',
             '',
         ]);
-
+/*
         // create taxrule index
         $result = $this->qryES('GET', 'vue_storefront_catalog_taxrule?pretty=true');
         if($result == 200){
@@ -105,7 +105,7 @@ class ReindexESCommand extends Command
                 $output->writeln("index 'vue_storefront_catalog_product'   NOT created");
             }
         }
-
+*/
         $output->writeln([
             '============',
             '',

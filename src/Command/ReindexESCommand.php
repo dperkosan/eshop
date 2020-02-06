@@ -586,6 +586,7 @@ class ReindexESCommand extends Command
         $options = [];
         $values = [];
         $configurableOptions = [];
+        $filterValuesGrouped = '';
         $conn = $this->em->getConnection();
 
         $sql = 'SELECT po.id AS attributeId, pot.name AS attributeLabel, po.position, po.code AS attributeCode, pv.product_id, pv.id, povt.value AS valueLabel, pov.id AS valueIndex
@@ -614,12 +615,15 @@ class ReindexESCommand extends Command
 
         foreach($configurableOptions as $attributeId => $configurableOption){
             $values = [];
+            $filterValues = [];
             foreach($configurableOptions[$attributeId]['values'] as $valueIndex => $value){
                 $values[] = '{
                     "value_index": '.$valueIndex.',
                     "label": "'.$value['label'].'"
                 }';
+                $filterValues[] = $valueIndex;
             }
+            $filterValuesGrouped .= '"'.$configurableOption['attribute_code'].'_options": ['.implode(",", $filterValues).'],';
             $options[] = '{
                 "attribute_id": "'.$attributeId.'",
                 "values": ['.implode(",",$values).'],
@@ -632,7 +636,7 @@ class ReindexESCommand extends Command
         }
 
         if(count($options) > 0){
-            return '"configurable_options": ['.implode(",", $options).'],';
+            return '"configurable_options": ['.implode(",", $options).'],'.$filterValuesGrouped;
         }else{
             return '';
         }

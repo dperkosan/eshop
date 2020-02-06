@@ -260,6 +260,7 @@ class ReindexESCommand extends Command
                 "status": '.$enabled.',
                 "visibility": '.$visibility.',
                 "type_id" : "'.$type_id.'",
+                "dress_size : 6",
                 "created_at": "'.$product['created_at'].'",
                 "updated_at": "'.$product['updated_at'].'",
                 "product_links": [],

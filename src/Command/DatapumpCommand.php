@@ -66,6 +66,8 @@ class DatapumpCommand extends Command
             '',
         ]);
 
+        $categoryIndex->importData();
+
         die;
         
 

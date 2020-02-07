@@ -73,10 +73,9 @@ class CategoryIndex
         }
     }
 
-    private function getCategories($product=false){
+    private function getCategories(){
         $conn = $this->em->getConnection();
-        $forSingleProduct = $product==false ? '' : ' AND p.product_id='.$product;
-
+        
         $sql = 'SELECT c.id, c.parent_id, t.name, t.slug, c.tree_level+1 AS level, c.position+1 AS position, 
                 count(p.id) AS product_count, ch.children, t.description, c.created_at, c.updated_at
                 FROM sylius_taxon c
@@ -85,8 +84,8 @@ class CategoryIndex
                 LEFT JOIN (SELECT GROUP_CONCAT(id) AS children, parent_id 
                             FROM sylius_taxon 
                             GROUP BY parent_id) ch ON c.id = ch.parent_id
-                WHERE c.parent_id is not null AND t.locale = "en_US" ' . $forSingleProduct .
-                'GROUP BY c.id';
+                WHERE c.parent_id is not null AND t.locale = "en_US"
+                GROUP BY c.id';
         
         $stmt = $conn->prepare($sql);
         $stmt->execute();

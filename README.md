@@ -39,13 +39,19 @@ $ symfony serve
 $ open http://127.0.0.1:8000/admin/login
 ```
 
+You can populate ES with this command (in project root folder):
+
+```bash
+$ php bin/console app:datapump
+```
+
 Tasks
 ---------------
 
 - [x] Move "Shop Api Plugin" into project
+- [x] Creating of "Data pump" in "Sylius" that will copy data from MySql into Elasticsearch
 - [ ] "Shop Api Plugin" customization for "Storefront API"
 - [ ] Creating platform for "Sylius" in "Storefront API"
-- [ ] Creating of "Data pump" in "Sylius" that will copy data from MySql into Elasticsearch
 - [ ] Synchronisation between MySql and Elasticsearch (on every create, insert, update and delete)
 - [ ] Disable front shop
 - [ ] Custom functionalities regarding ongoing project

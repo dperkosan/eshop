@@ -14,6 +14,9 @@ App\Webedia\ShopApiPlugin\View\Product\ProductVariantView:
         nameAxis:
             expose: true
             type: array<string, string>
+        idAxis:
+            expose: true
+            type: array<string, integer>
         price:
             expose: true
             type: App\Webedia\ShopApiPlugin\View\PriceView

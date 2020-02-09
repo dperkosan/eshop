@@ -7,6 +7,9 @@ namespace App\Webedia\ShopApiPlugin\View\Product;
 class ProductView
 {
     /** @var string */
+    public $id;
+
+    /** @var string */
     public $code;
 
     /** @var string */

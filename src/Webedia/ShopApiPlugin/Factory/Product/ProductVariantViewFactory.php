@@ -57,6 +57,7 @@ final class ProductVariantViewFactory implements ProductVariantViewFactoryInterf
                 $optionValue->getOption()->getTranslation($locale)->getName(),
                 $optionValue->getTranslation($locale)->getValue()
             );
+           $variantView->idAxis[$optionValue->getOption()->getId()] = $optionValue->getId();
         }
 
         return $variantView;

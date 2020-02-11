@@ -115,7 +115,7 @@ class ProductIndex
                     "item_id" => (int)$product['id'],
                     "product_id" => (int)$product['id'],
                     "stock_id" => (int)1,
-                    "qty" => (int)0,
+                    "qty" => (int)$product['qty'],
                     "is_in_stock" => true,
                     "is_qty_decimal" => false,
                     "show_default_notification_message" => false,
@@ -156,26 +156,132 @@ class ProductIndex
             
             $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/'.$product['id'], json_encode($qry));
         }
+/*
+        $variantProducts = $this->getVariantProducts();
+        foreach($variantProducts as $variantProduct){
+            $categories = $this->getCategories($variantProduct['product_id']);
+            $media = $this->getVariantMedia($variantProduct['id']);
+            $categoriesArr = [];
+            foreach($categories as $category){
+                $categoriesArr[] = [
+                    "category_id" => (int)$category['id'],
+                    "name" => $category['name'],
+                    "slug" => $this->getUrlKey($category['slug']),
+                    "path" => $category['slug']
+                ];
+            }
+            
+            $qry = [
+                "id" => (int)$variantProduct['id'],
+                "sku" => $variantProduct['sku'],
+                "name" => $variantProduct['name'],
+                "price" => (float)$variantProduct['price'],
+                "status" => (int)1,
+                "visibility" => (int)1,
+                "type_id" => "simple",
+                "created_at" => $variantProduct['created_at'],
+                "updated_at" => $variantProduct['updated_at'],
+                "product_links" => [],
+                "tier_prices" => [],
+                "custom_attributes" => null,
+                "final_price" => (float)$variantProduct['price'],
+                "max_price" => (float)$variantProduct['price'],
+                "max_regular_price" => (float)$variantProduct['price'],
+                "minimal_regular_price" => (float)$variantProduct['price'],
+                "special_price" => null,
+                "minimal_price" => (float)$variantProduct['price'],
+                "regular_price" => (float)$variantProduct['price'],
+                "description" => trim(preg_replace('/\s+/', ' ', strip_tags($variantProduct['description']))),
+                "image" => !empty($variantProduct['image']) ? '/'.$variantProduct['image'] : $variantProduct['image'],
+                "small_image" => !empty($variantProduct['image']) ? '/'.$variantProduct['image'] : $variantProduct['image'],
+                "thumbnail" => !empty($variantProduct['image']) ? '/'.$variantProduct['image'] : $variantProduct['image'],
+                "category_ids" => explode(",",$variantProduct['category_ids']),
+                "options_container" => "",
+                "required_options" => "0",
+                "has_options" => "0",
+                "url_key" => $variantProduct['url_key'],
+                "msrp_display_actual_price_type" => "0",
+                "tax_class_id" => null,
+                "slug" => $product['url_key'],
+                "links" => null,
+                "stock" => [
+                    "item_id" => (int)$variantProduct['id'],
+                    "product_id" => (int)$variantProduct['id'],
+                    "stock_id" => (int)1,
+                    "qty" => (int)$variantProduct['qty'],
+                    "is_in_stock" => true,
+                    "is_qty_decimal" => false,
+                    "show_default_notification_message" => false,
+                    "use_config_min_qty" => true,
+                    "min_qty" => (int)0,
+                    "use_config_min_sale_qty" => (int)1,
+                    "min_sale_qty" => (int)1,
+                    "use_config_max_sale_qty" => true,
+                    "max_sale_qty" => (int)10000,
+                    "use_config_backorders" => true,
+                    "backorders" => (int)0,
+                    "use_config_notify_stock_qty" => true,
+                    "notify_stock_qty" => (int)1,
+                    "use_config_qty_increments" => true,
+                    "qty_increments" => (int)0,
+                    "use_config_enable_qty_inc" => true,
+                    "enable_qty_increments" => false,
+                    "use_config_manage_stock" => true,
+                    "manage_stock" => true,
+                    "low_stock_date" => null,
+                    "is_decimal_divided" => false,
+                    "stock_status_changed_auto" => (int)0
+                ],
+                "media_gallery" => $media,
+                "url_path" => 'products/'.$variantProduct['url_key'],
+                "category" => $categoriesArr
+            ];
+
+            $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/v-'.$variantProduct['id'], json_encode($qry));
+        }
+        */
     }
 
     private function getProducts(){
         $conn = $this->em->getConnection();
         $sql = 'SELECT p.id, t.name, i.path AS image, p.code AS sku, t.slug as url_key, 
-                count(o.product_id) as configurable, price.price/100 AS price, pt.category_ids, p.enabled,
-                p.created_at, p.updated_at, t.description
+                count(o.product_id) as configurable, inventory.price/100 AS price, pt.category_ids, p.enabled,
+                p.created_at, p.updated_at, t.description, IF(count(o.product_id) > 0, 0, inventory.qty) AS qty
                 FROM sylius_product p
                 LEFT JOIN sylius_product_image i ON p.id = i.owner_id 
                 LEFT JOIN sylius_product_translation t ON p.id = t.translatable_id
                 LEFT JOIN sylius_product_options o ON p.id = o.product_id
-                LEFT JOIN (SELECT product_id, price as price
+                LEFT JOIN (SELECT product_id, price as price, on_hand - on_hold AS qty
                             FROM sylius_channel_pricing p
                             LEFT JOIN sylius_product_variant v ON p.product_variant_id = v.id
-                            GROUP BY product_id) price ON p.id = price.product_id
+                            GROUP BY product_id) inventory ON p.id = inventory.product_id
                 LEFT JOIN (SELECT product_id, GROUP_CONCAT(taxon_id) AS category_ids
                             FROM sylius_product_taxon
                             GROUP BY product_id) pt ON p.id = pt.product_id
                 WHERE t.locale = "en_US"
                 GROUP BY p.id';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $products = $stmt->fetchAll();
+
+        return $products;
+    }
+
+    private function getVariantProducts(){
+        $conn = $this->em->getConnection();
+        $sql = 'SELECT v.id, p.id AS product_id, v.code AS sku, CONCAT(t.name, " - ", vt.name) AS name, pr.price/100 AS price, v.created_at, v.updated_at,
+                t.description, im.path AS image, t.slug AS url_key, v.id, pt.category_ids, v.on_hand - v.on_hold AS qty
+                FROM sylius_product_variant v
+                    LEFT JOIN sylius_product_image_product_variants iv ON iv.variant_id = v.id
+                    LEFT JOIN sylius_product_image im ON im.id = iv.image_id
+                    LEFT JOIN sylius_product p ON p.id = v.product_id
+                    LEFT JOIN sylius_product_translation t ON t.translatable_id = v.product_id AND t.locale = "en_US"
+                    LEFT JOIN sylius_product_variant_translation vt ON vt.translatable_id = v.id AND vt.locale = "en_US"
+                    LEFT JOIN sylius_channel_pricing pr ON pr.product_variant_id = v.id
+                    LEFT JOIN (SELECT product_id, GROUP_CONCAT(taxon_id) AS category_ids
+                                FROM sylius_product_taxon
+                                GROUP BY product_id) pt ON pt.product_id = v.product_id
+                    GROUP BY v.id';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $products = $stmt->fetchAll();
@@ -273,6 +379,32 @@ class ProductIndex
         $sql = 'SELECT path 
                 FROM sylius_product_image 
                 WHERE owner_id = '.$productId;
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+
+        foreach($results as $key => $result){
+            $media[] = [
+                "vid" => null,
+                "image" => '/'.$result['path'],
+                "pos" => (int)$key,
+                "typ" => "image",
+                "lab" => ""
+            ];
+        }
+
+        return $media;
+    }
+
+    private function getVariantMedia($productId){
+        $media = [];
+        $conn = $this->em->getConnection();
+
+        $sql = 'SELECT path 
+                FROM sylius_product_image_product_variants ipv
+                LEFT JOIN sylius_product_image pi ON pi.id = ipv.image_id
+                WHERE ipv.variant_id = '.$productId;
         
         $stmt = $conn->prepare($sql);
         $stmt->execute();

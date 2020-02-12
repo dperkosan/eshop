@@ -16,6 +16,12 @@ sylius_shop_api_product_show_details_by_code:
     defaults:
         _controller: sylius.shop_api_plugin.controller.product.show_product_details_by_code_action
 
+sylius_shop_api_product_show_variant_details_by_code:
+    path: /variant-products/by-code/{code}
+    methods: [GET]
+    defaults:
+        _controller: sylius.shop_api_plugin.controller.product.show_product_variant_details_by_code_action
+
 sylius_shop_api_product_show_catalog_by_code:
     path: /taxon-products/by-code/{taxonCode}
     methods: [GET]

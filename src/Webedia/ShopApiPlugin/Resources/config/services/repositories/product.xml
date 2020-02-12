@@ -10,6 +10,14 @@
             <argument type="service" id="sylius.shop_api_plugin.provider.supported_locale_provider"/>
         </service>
 
+        <service id="sylius.shop_api_plugin.view_repository.product_variant_details_view_repository"
+                 class="App\Webedia\ShopApiPlugin\ViewRepository\Product\ProductVariantDetailsViewRepository">
+            <argument type="service" id="sylius.repository.channel" />
+            <argument type="service" id="sylius.repository.product_variant" />
+            <argument type="service" id="sylius.shop_api_plugin.factory.detailed_product_view_factory" />
+            <argument type="service" id="sylius.shop_api_plugin.provider.supported_locale_provider"/>
+        </service>
+
         <service id="sylius.shop_api_plugin.view_repository.product_catalog_view_repository"
                  class="App\Webedia\ShopApiPlugin\ViewRepository\Product\ProductCatalogViewRepository">
             <argument type="service" id="sylius.repository.channel" />

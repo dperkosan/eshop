@@ -59,7 +59,7 @@ class ProductIndex
             $categories = $this->getCategories($product['id']);
             $configurableOptions = $this->getConfigurableOptions($product['id']);
             $media = $this->getMedia($product['id']);
-            $configurableChildren = $this->getConfigurableChildren($product['id']);
+            $configurableChildren = $type_id == "configurable" ? $this->getConfigurableChildren($product['id']) : [];
             $categoriesArr = [];
             foreach($categories as $category){
                 $categoriesArr[] = [
@@ -71,7 +71,7 @@ class ProductIndex
             }
             
             $qry = [
-                "id" => (int)$product['id'],
+                "id" => (int)-$product['id'],
                 "sku" => $product['sku'],
                 "name" => $product['name'],
                 "price" => (float)$product['price'],
@@ -154,9 +154,9 @@ class ProductIndex
                 $qry[$key] = $i;
             }
             
-            $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/'.$product['id'], json_encode($qry));
+            $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/'.(int)-$product['id'], json_encode($qry));
         }
-/*
+
         $variantProducts = $this->getVariantProducts();
         foreach($variantProducts as $variantProduct){
             $categories = $this->getCategories($variantProduct['product_id']);
@@ -237,9 +237,8 @@ class ProductIndex
                 "category" => $categoriesArr
             ];
 
-            $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/v-'.$variantProduct['id'], json_encode($qry));
+            $result = Es::qryES('POST', 'vue_storefront_catalog_product/_doc/'.$variantProduct['id'], json_encode($qry));
         }
-        */
     }
 
     private function getProducts(){

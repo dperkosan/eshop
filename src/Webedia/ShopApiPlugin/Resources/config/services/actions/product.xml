@@ -20,6 +20,14 @@
             <argument type="service" id="sylius.context.channel" />
         </service>
 
+        <service id="sylius.shop_api_plugin.controller.product.show_product_variant_details_by_code_action"
+                 class="App\Webedia\ShopApiPlugin\Controller\Product\ShowProductVariantDetailsByCodeAction"
+        >
+            <argument type="service" id="sylius.shop_api_plugin.view_repository.product_variant_details_view_repository" />
+            <argument type="service" id="fos_rest.view_handler" />
+            <argument type="service" id="sylius.context.channel" />
+        </service>
+
         <service id="sylius.shop_api_plugin.controller.product.show_product_catalog_by_taxon_slug_action"
                  class="App\Webedia\ShopApiPlugin\Controller\Product\ShowProductCatalogByTaxonSlugAction"
         >

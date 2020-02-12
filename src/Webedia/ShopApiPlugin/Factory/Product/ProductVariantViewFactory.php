@@ -35,6 +35,7 @@ final class ProductVariantViewFactory implements ProductVariantViewFactoryInterf
             throw new ViewCreationException('Variant does not have pricing.');
         }
 
+        $variantView->id = $variant->getId();
         $variantView->code = $variant->getCode();
         $variantView->name = $variant->getTranslation($locale)->getName();
         $variantView->price = $this->priceViewFactory->create(
@@ -49,6 +50,8 @@ final class ProductVariantViewFactory implements ProductVariantViewFactoryInterf
                 $channel->getBaseCurrency()->getCode()
             );
         }
+
+        $variantView->qty = $variant->getOnHand() - $variant->getOnHold();
 
         foreach ($variant->getOptionValues() as $optionValue) {
             $variantView->axis[] = $optionValue->getCode();

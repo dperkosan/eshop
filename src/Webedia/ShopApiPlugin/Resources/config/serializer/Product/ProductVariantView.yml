@@ -2,12 +2,18 @@ App\Webedia\ShopApiPlugin\View\Product\ProductVariantView:
     exclusion_policy: ALL
     xml_root_name: product_variant_view
     properties:
+        id:
+            expose: true
+            type: integer
         code:
             expose: true
             type: string
         name:
             expose: true
             type: string
+        qty:
+            expose: true
+            type: integer
         axis:
             expose: true
             type: array

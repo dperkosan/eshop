@@ -9,11 +9,17 @@ use App\Webedia\ShopApiPlugin\View\PriceView;
 
 class ProductVariantView
 {
+    /** @var int */
+    public $id;
+
     /** @var string */
     public $code;
 
     /** @var string */
     public $name;
+
+    /** @var int */
+    public $qty;
 
     /** @var array */
     public $axis = [];

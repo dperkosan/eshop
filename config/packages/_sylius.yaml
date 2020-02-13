@@ -249,6 +249,8 @@ sylius_user:
 sylius_shop:
     product_grid:
         include_all_descendants: true
+    checkout_resolver:
+        pattern: "%sylius.security.shop_regex%/checkout/"
 
 sylius_theme:
     sources:
